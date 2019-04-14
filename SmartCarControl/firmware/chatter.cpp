@@ -21,8 +21,8 @@ SmartCar mycar;
 std_msgs::Float32 distance;
 SmartCarControl::front front;
 
-int SensorLeftStatus;           //左红外传感器状态
-int SensorRightStatus;          //右红外传感器状态
+//int SensorLeftStatus;           //左红外传感器状态
+//int SensorRightStatus;          //右红外传感器状态
 
 ros::Publisher chatter1("smartcar/distance_to_obstacle",&distance);
 ros::Publisher chatter2("smartcar/front_obstacle",&front);

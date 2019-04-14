@@ -1,0 +1,7 @@
+<launch>
+    <node name="teleop_smartcar_key" pkg="keyboard_capture" type="teleop_smartcar_key" output="screen"/>
+    <node name="smartcar_monitor" pkg="SmartCarControl" type="smartcar_monitor" output="screen"/>
+    <node name="serial_node" pkg="rosserial_python" type="serial_node.py">
+        <param name="port" value="/dev/ttyACM0"/>
+    </node>
+</launch>

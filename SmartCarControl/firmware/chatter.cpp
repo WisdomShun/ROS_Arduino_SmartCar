@@ -21,8 +21,8 @@ SmartCar mycar;
 std_msgs::Float32 distance;
 SmartCarControl::front front;
 
-//int SensorLeftStatus;           //左红外传感器状态
-//int SensorRightStatus;          //右红外传感器状态
+int SensorLeftStatus;           //左红外传感器状态
+int SensorRightStatus;          //右红外传感器状态
 
 ros::Publisher chatter1("smartcar/distance_to_obstacle",&distance);
 ros::Publisher chatter2("smartcar/front_obstacle",&front);
@@ -51,7 +51,9 @@ void callback(const geometry_msgs::Twist &msg){
 }
 
 void updateStatus(){
-    switch (digitalRead(SENSOR_LEFT)){
+    SensorLeftStatus = digitalRead(SENSOR_LEFT);
+    SensorRightStatus = digitalRead(SENSOR_RIGHT);
+    switch (SensorLeftStatus){
         case HIGH:
             front.left = true;
             break;
@@ -61,7 +63,7 @@ void updateStatus(){
         default:
             break;
     }
-    switch (digitalRead(SENSOR_RIGHT)){
+    switch (SensorRightStatus){
         case HIGH:
             front.right = true;
             break;
@@ -91,5 +93,5 @@ void loop() {
     chatter1.publish(&distance);
     chatter2.publish(&front);
     nh.spinOnce();
-    delay(1);
+    delay(100);
 }

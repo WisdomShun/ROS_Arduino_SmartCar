@@ -1,0 +1,7 @@
+<launch>
+    <node name="teleop_smartcar_key" pkg="keyboard_capture" type="teleop_smartcar_key" output="screen"/>
+    <node name="smartcar_monitor" pkg="SmartCarControl" type="smartcar_monitor" output="screen"/>
+    <node pkg="rostopic" name="Distance" type="rostopic" args="echo /smartcar/distance_to_obstacle" output="screen" launch-prefix="xterm -e"> </node>
+    <node pkg="rostopic" name="FrontObstacle" type="rostopic" args="echo /smartcar/front_obstacle" output="screen" launch-prefix="xterm -e"> </node>
+
+</launch>

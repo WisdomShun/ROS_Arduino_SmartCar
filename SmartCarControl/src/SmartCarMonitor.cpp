@@ -15,7 +15,9 @@ void Listener::callback(const geometry_msgs::Twist::ConstPtr &msg) {
         ROS_INFO("forwarding");
     } else if (abs(msg->linear.x + 2.0) < 0.000001) {
         ROS_INFO("backwarding");
-    } else {
+    } else if (abs(msg->linear.x + 4.0) < 0.000001) {
+        ROS_INFO("STOP");
+    }else {
         ROS_ERROR("ERROR Twist Information!");
     }
 }

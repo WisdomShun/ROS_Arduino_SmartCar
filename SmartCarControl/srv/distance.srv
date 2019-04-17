@@ -1,0 +1,5 @@
+uint8 input
+---
+float32 front #返回前面的距离
+float32 left  #返回左边的距离
+float32 right #返回右边的距离

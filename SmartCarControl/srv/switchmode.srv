@@ -1,0 +1,3 @@
+bool antoon #true开启自动瞎jb开模式，false开启手动模式
+---
+string echo #返回转换后的状态

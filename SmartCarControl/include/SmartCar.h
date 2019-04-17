@@ -37,6 +37,7 @@ public:
     void spinRight();
     void turnLeft();
     void turnRight();
+    void adjustHead();
     float distance();
     float distanceDetection(char direction);
     void init();

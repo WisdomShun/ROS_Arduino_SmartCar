@@ -65,7 +65,7 @@ void SmartCar::turnLeft() {
     digitalWrite(LEFT_MOTOR_BACK, LOW);
     analogWrite(LEFT_MOTOR_FORWARD, 0);
     analogWrite(LEFT_MOTOR_BACK, 0);
-    delay(300);
+    delay(400);
 }
 
 void SmartCar::turnRight() {
@@ -77,7 +77,7 @@ void SmartCar::turnRight() {
     digitalWrite(LEFT_MOTOR_BACK, LOW);
     analogWrite(LEFT_MOTOR_FORWARD, 140);
     analogWrite(LEFT_MOTOR_BACK, 0);
-    delay(300);
+    delay(400);
 }
 
 float SmartCar::distance() {   // 量出前方距离,注意SR04 VCC电源工作电压为5V
@@ -103,10 +103,17 @@ void SmartCar::servoPulse(int myangle) {/*定义一个脉冲函数，用来模�
     delay(20 - pulsewidth / 1000);//延时周期内剩余时间
 }
 
+void SmartCar::adjustHead(){
+    for (int i = 0; i <= 9; i++) //产生PWM个数，等效延时以保证能转到响应角度
+    {
+        servoPulse(90);//模拟产生PWM
+    }
+}
+
 float SmartCar::distanceDetection(char direction) {
     switch (direction) {
         case LEFT:
-            for (int i = 0; i <= 17; i++) //产生PWM个数，等效延时以保证能转到响应角度
+            for (int i = 0; i <= 16; i++) //产生PWM个数，等效延时以保证能转到响应角度
             {
                 servoPulse(175);//模拟产生PWM
             }
@@ -118,7 +125,7 @@ float SmartCar::distanceDetection(char direction) {
             }
             return distance();
         case FORWARD:
-            for (int i = 0; i <= 5; i++) //产生PWM个数，等效延时以保证能转到响应角度
+            for (int i = 0; i <= 6; i++) //产生PWM个数，等效延时以保证能转到响应角度
             {
                 servoPulse(90);//模拟产生PWM
             }

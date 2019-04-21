@@ -19,7 +19,6 @@
 #include "SmartCarControl/distance.h"
 #include "SmartCarControl/switchmode.h"
 
-
 /*
  * Arduino要求定义全局变量段
  */
@@ -31,11 +30,11 @@ SmartCar mycar;
 SmartCarControl::front front;
 
 //ros::Publisher chatter1("smartcar/distance_to_obstacle",&distance);
-ros::Publisher chatter2("smartcar/front_obstacle",&front);
+ros::Publisher chatter2("smartcar/front_obstacle", &front);
 
 bool isAuto = false;//默认为手动模式，防止一开机就乱跑
 
-void switchAutoService(const SmartCarControl::switchmode::Request &req,SmartCarControl::switchmode::Response &res){
+void switchAutoService(const SmartCarControl::switchmode::Request &req, SmartCarControl::switchmode::Response &res) {
     //memset(buf,0,sizeof(buf));
 //    if (req.antoon){
 //        if (isAuto){
@@ -57,7 +56,7 @@ void switchAutoService(const SmartCarControl::switchmode::Request &req,SmartCarC
 //            res.echo = buf;
 //        }
 //    }
-    if (req.antoon){
+    if (req.antoon) {
         isAuto = true;
     } else {
         isAuto = false;
@@ -65,13 +64,13 @@ void switchAutoService(const SmartCarControl::switchmode::Request &req,SmartCarC
 
 }
 
-void distanceService(const SmartCarControl::distance::Request &req,SmartCarControl::distance::Response &res){
+void distanceService(const SmartCarControl::distance::Request &req, SmartCarControl::distance::Response &res) {
     res.left = mycar.distanceDetection(LEFT);
     res.right = mycar.distanceDetection(RIGHT);
     res.front = mycar.distanceDetection(FORWARD);
 }
 
-void callback(const geometry_msgs::Twist &msg){
+void callback(const geometry_msgs::Twist &msg) {
     //ROS_DEBUG("linear : [x = %f] \tangular : [z = %f]", msg.linear.x, msg.angular.z);
     if (abs(msg.angular.z - 2.0) < 0.000001) {
         //ROS_INFO("turning left");
@@ -92,8 +91,10 @@ void callback(const geometry_msgs::Twist &msg){
     }
 }
 
-void updateStatus(){
-    switch (digitalRead(SENSOR_LEFT)){
+void updateStatus() {
+    char left = digitalRead(SENSOR_LEFT);
+    char right = digitalRead(SENSOR_RIGHT);
+    switch (left) {
         case HIGH:
             front.left = false;
             break;
@@ -103,7 +104,7 @@ void updateStatus(){
         default:
             break;
     }
-    switch (digitalRead(SENSOR_RIGHT)){
+    switch (right) {
         case HIGH:
             front.right = false;
             break;
@@ -116,8 +117,10 @@ void updateStatus(){
     //distance.data = mycar.distance();
 }
 
-ros::ServiceServer<SmartCarControl::distance::Request,SmartCarControl::distance::Response> servicedistance("getDistance",&distanceService);
-ros::ServiceServer<SmartCarControl::switchmode::Request,SmartCarControl::switchmode::Response> serviceswitch("switchToAuto",&switchAutoService);
+ros::ServiceServer<SmartCarControl::distance::Request, SmartCarControl::distance::Response> servicedistance(
+        "getDistance", &distanceService);
+ros::ServiceServer<SmartCarControl::switchmode::Request, SmartCarControl::switchmode::Response> serviceswitch(
+        "switchToAuto", &switchAutoService);
 ros::Subscriber<geometry_msgs::Twist> sub("smartcar/cmd_vel", &callback);
 
 
@@ -132,28 +135,27 @@ void setup() {
     nh.subscribe(sub);
 }
 
-void adjust(){
+void adjust() {
     float l = mycar.distanceDetection(LEFT);
     float r = mycar.distanceDetection(RIGHT);
-    if (l < 15 && r < 15){
-        mycar.adjustHead();//摆正头
-        mycar.back();//左右都有障碍物，后退，
-    } else if (l > 20 && r > 20){
-        mycar.adjustHead();//摆正头
-        if(l > r){
-            mycar.turnLeft();
+    if(l < 15 && r < 15){
+        mycar.back();
+    } else {
+        if (l > r) {
+            mycar.spinLeft();
         } else {
-            mycar.turnRight();
+            mycar.spinRight();
         }
     }
 }
 
 void selfRun() {
 
-    if (mycar.distanceDetection(FORWARD) < 15) {
+    if (mycar.distanceDetection(FORWARD) < 20) {
         mycar.stop();
         adjust();
     } else { //只有在车超声检测满足的条件下才执行下面的红外判断
+#ifndef DAY
         if (front.right == true && front.left == true) {
             mycar.stop();
             adjust();
@@ -162,8 +164,11 @@ void selfRun() {
         } else if (front.left == true) {
             mycar.turnRight();
         } else {
+#endif
             mycar.forward();
+#ifndef DAY
         }
+#endif
     }
 }
 
@@ -172,7 +177,7 @@ void loop() {
     //chatter1.publish(&distance);
     chatter2.publish(&front);
     nh.spinOnce();
-    switch (isAuto){
+    switch (isAuto) {
         case true:
             selfRun();
             break;

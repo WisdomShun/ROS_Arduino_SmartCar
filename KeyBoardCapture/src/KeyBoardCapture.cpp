@@ -36,11 +36,11 @@ void Teleop::keyLoop(){
     char c;
     bool dirty=false;
 
-    // get the console in raw mode
+
     tcgetattr(kfd, &cooked);
     memcpy(&raw, &cooked, sizeof(struct termios));
     raw.c_lflag &=~ (ICANON | ECHO);
-    // Setting a new line, then end of file
+
     raw.c_cc[VEOL] = 1;
     raw.c_cc[VEOF] = 2;
     tcsetattr(kfd, TCSANOW, &raw);

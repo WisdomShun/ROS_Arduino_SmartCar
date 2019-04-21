@@ -21,8 +21,9 @@ void SmartCar::back() {
     digitalWrite(LEFT_MOTOR_BACK, HIGH);//设置驱动方式为前进
     analogWrite(LEFT_MOTOR_FORWARD, 0);//设置左轮的速率
     analogWrite(RIGHT_MOTOR_FORWARD, 0);//设置右轮的速率
-    analogWrite(LEFT_MOTOR_BACK, 172);
-    analogWrite(RIGHT_MOTOR_BACK, 170);
+    analogWrite(LEFT_MOTOR_BACK, 202);
+    analogWrite(RIGHT_MOTOR_BACK, 200);
+    delay(100);
 }
 
 void SmartCar::stop() {
@@ -35,25 +36,25 @@ void SmartCar::stop() {
 void SmartCar::spinLeft() {
     digitalWrite(RIGHT_MOTOR_FORWARD, HIGH);    // 右电机前进
     digitalWrite(RIGHT_MOTOR_BACK, LOW);
-    analogWrite(RIGHT_MOTOR_FORWARD, 150);
+    analogWrite(RIGHT_MOTOR_FORWARD, 200);
     analogWrite(RIGHT_MOTOR_BACK, 0);//PWM比例0~255调速
     digitalWrite(LEFT_MOTOR_FORWARD, LOW);   //左轮不动
     digitalWrite(LEFT_MOTOR_BACK, HIGH);
     analogWrite(LEFT_MOTOR_FORWARD, 0);
-    analogWrite(LEFT_MOTOR_BACK, 150);
-    delay(70);
+    analogWrite(LEFT_MOTOR_BACK, 200);
+    delay(100);
 }
 
 void SmartCar::spinRight() {
     digitalWrite(RIGHT_MOTOR_FORWARD, LOW);    // 右电机前进
     digitalWrite(RIGHT_MOTOR_BACK, HIGH);
     analogWrite(RIGHT_MOTOR_FORWARD, 0);
-    analogWrite(RIGHT_MOTOR_BACK, 150);//PWM比例0~255调速
+    analogWrite(RIGHT_MOTOR_BACK, 200);//PWM比例0~255调速
     digitalWrite(LEFT_MOTOR_FORWARD, HIGH);   //左轮不动
     digitalWrite(LEFT_MOTOR_BACK, LOW);
-    analogWrite(LEFT_MOTOR_FORWARD, 152);
+    analogWrite(LEFT_MOTOR_FORWARD, 202);
     analogWrite(LEFT_MOTOR_BACK, 0);
-    delay(70);
+    delay(100);
 }
 
 void SmartCar::turnLeft() {
@@ -104,7 +105,7 @@ void SmartCar::servoPulse(int myangle) {/*定义一个脉冲函数，用来模�
 }
 
 void SmartCar::adjustHead(){
-    for (int i = 0; i <= 9; i++) //产生PWM个数，等效延时以保证能转到响应角度
+    for (int i = 0; i <= 10; i++) //产生PWM个数，等效延时以保证能转到响应角度
     {
         servoPulse(90);//模拟产生PWM
     }
@@ -113,19 +114,19 @@ void SmartCar::adjustHead(){
 float SmartCar::distanceDetection(char direction) {
     switch (direction) {
         case LEFT:
-            for (int i = 0; i <= 16; i++) //产生PWM个数，等效延时以保证能转到响应角度
+            for (int i = 0; i <= 15; i++) //产生PWM个数，等效延时以保证能转到响应角度
             {
                 servoPulse(175);//模拟产生PWM
             }
             return distance();
         case RIGHT:
-            for (int i = 0; i <= 17; i++) //产生PWM个数，等效延时以保证能转到响应角度
+            for (int i = 0; i <= 21; i++) //产生PWM个数，等效延时以保证能转到响应角度
             {
                 servoPulse(5);//模拟产生PWM
             }
             return distance();
         case FORWARD:
-            for (int i = 0; i <= 6; i++) //产生PWM个数，等效延时以保证能转到响应角度
+            for (int i = 0; i <= 9; i++) //产生PWM个数，等效延时以保证能转到响应角度
             {
                 servoPulse(90);//模拟产生PWM
             }

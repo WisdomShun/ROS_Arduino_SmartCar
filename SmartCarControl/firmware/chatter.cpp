@@ -25,42 +25,43 @@
 ros::NodeHandle nh;
 
 SmartCar mycar;
-//char buf[30];
+char buf[16];
 //std_msgs::Float32 distance;
 SmartCarControl::front front;
 
-//ros::Publisher chatter1("smartcar/distance_to_obstacle",&distance);
+//ros::Publisher chatter1("smartcar/front_distance",&distance);
 ros::Publisher chatter2("smartcar/front_obstacle", &front);
 
 bool isAuto = false;//默认为手动模式，防止一开机就乱跑
 
 void switchAutoService(const SmartCarControl::switchmode::Request &req, SmartCarControl::switchmode::Response &res) {
-    //memset(buf,0,sizeof(buf));
-//    if (req.antoon){
-//        if (isAuto){
-//            strcpy_P(buf,PSTR("Already At Mode Auto!"));
-//            res.echo = buf;
-//        } else if (!isAuto){
-//            isAuto = true;
-//            strcpy_P(buf,PSTR("Change Mode To Auto!"));
-//            res.echo = buf;
-//            //
-//        }
-//    } else if (!req.antoon) {
-//        if (!isAuto){
-//            strcpy_P(buf,PSTR("Already At Mode Manual!"));
-//            res.echo = buf;
-//        } else if (isAuto){
-//            isAuto = false;
-//            strcpy_P(buf,PSTR("Change Mode To Manual!"));
-//            res.echo = buf;
-//        }
-//    }
-    if (req.antoon) {
-        isAuto = true;
-    } else {
-        isAuto = false;
+    memset(buf,0,sizeof(buf));
+    if (req.antoon){
+        if (isAuto){
+            strcpy_P(buf,PSTR("AlreadyAtAuto"));
+            res.echo = buf;
+        } else if (!isAuto){
+            isAuto = true;
+            strcpy_P(buf,PSTR("ChangeToAuto"));
+            res.echo = buf;
+        }
+    } else if (!req.antoon) {
+        if (!isAuto){
+            strcpy_P(buf,PSTR("AlreadyAtManual"));
+            res.echo = buf;
+        } else if (isAuto){
+            isAuto = false;
+            strcpy_P(buf,PSTR("ChangeToManual"));
+            //停车
+            mycar.stop();
+            res.echo = buf;
+        }
     }
+//    if (req.antoon) {
+//        isAuto = true;
+//    } else {
+//        isAuto = false;
+//    }
 
 }
 
@@ -138,8 +139,23 @@ void setup() {
 void adjust() {
     float l = mycar.distanceDetection(LEFT);
     float r = mycar.distanceDetection(RIGHT);
-    if(l < 15 && r < 15){
-        mycar.back();
+
+#ifndef DAY
+    bool ir_l = front.left;
+    bool ir_r = front.right;
+
+    if ((l < 20 && r < 20) || (ir_l)&&(ir_r) ) {
+        mycar.back();//这里的后退操作没有指定具体的后退到的条件，会导致重复进入死角
+    } else {
+        if (l > r || ir_r) {
+            mycar.spinLeft();
+        } else if (r > l || ir_l){
+            mycar.spinRight();
+        }
+    }
+#else
+    if (l < 20 && r < 20) {
+        mycar.back();//这里的后退操作没有指定具体的后退到的条件，会导致重复进入死角
     } else {
         if (l > r) {
             mycar.spinLeft();
@@ -147,28 +163,30 @@ void adjust() {
             mycar.spinRight();
         }
     }
+#endif
+
+
 }
 
 void selfRun() {
 
-    if (mycar.distanceDetection(FORWARD) < 20) {
+#ifndef DAY
+    if (front.right && front.left) {
         mycar.stop();
         adjust();
-    } else { //只有在车超声检测满足的条件下才执行下面的红外判断
-#ifndef DAY
-        if (front.right == true && front.left == true) {
-            mycar.stop();
-            adjust();
-        } else if (front.right == true) {
-            mycar.turnLeft();
-        } else if (front.left == true) {
-            mycar.turnRight();
-        } else {
+    } else if (front.right) {
+        mycar.turnLeft();
+    } else if (front.left) {
+        mycar.turnRight();
+    } else {
+        mycar.forward();
+    }
 #endif
-            mycar.forward();
-#ifndef DAY
-        }
-#endif
+    if (mycar.distanceDetection(FORWARD) < 25) {
+        mycar.stop();
+        adjust();
+    } else {
+        mycar.forward();
     }
 }
 

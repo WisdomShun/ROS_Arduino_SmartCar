@@ -18,9 +18,9 @@ add_message_files(
 )
 
 add_service_files(
-FILES
-distance.srv
-switchmode.srv
+        FILES
+        distance.srv
+        switchmode.srv
 )
 
 generate_messages(

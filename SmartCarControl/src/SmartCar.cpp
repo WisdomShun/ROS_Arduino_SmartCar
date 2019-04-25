@@ -42,7 +42,7 @@ void SmartCar::spinLeft() {
     digitalWrite(LEFT_MOTOR_BACK, HIGH);
     analogWrite(LEFT_MOTOR_FORWARD, 0);
     analogWrite(LEFT_MOTOR_BACK, 200);
-    delay(100);
+    delay(80);
 }
 
 void SmartCar::spinRight() {
@@ -54,7 +54,7 @@ void SmartCar::spinRight() {
     digitalWrite(LEFT_MOTOR_BACK, LOW);
     analogWrite(LEFT_MOTOR_FORWARD, 202);
     analogWrite(LEFT_MOTOR_BACK, 0);
-    delay(100);
+    delay(80);
 }
 
 void SmartCar::turnLeft() {

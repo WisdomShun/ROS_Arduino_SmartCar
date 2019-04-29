@@ -60,7 +60,7 @@ void SmartCar::spinRight() {
 void SmartCar::turnLeft() {
     digitalWrite(RIGHT_MOTOR_FORWARD, HIGH);    // 右电机前进
     digitalWrite(RIGHT_MOTOR_BACK, LOW);
-    analogWrite(RIGHT_MOTOR_FORWARD, 140);
+    analogWrite(RIGHT_MOTOR_FORWARD, 180);
     analogWrite(RIGHT_MOTOR_BACK, 0);//PWM比例0~255调速
     digitalWrite(LEFT_MOTOR_FORWARD, LOW);   //左轮不动
     digitalWrite(LEFT_MOTOR_BACK, LOW);
@@ -76,7 +76,7 @@ void SmartCar::turnRight() {
     analogWrite(RIGHT_MOTOR_BACK, 0);//PWM比例0~255调速
     digitalWrite(LEFT_MOTOR_FORWARD, HIGH);//左电机前进
     digitalWrite(LEFT_MOTOR_BACK, LOW);
-    analogWrite(LEFT_MOTOR_FORWARD, 140);
+    analogWrite(LEFT_MOTOR_FORWARD, 180);
     analogWrite(LEFT_MOTOR_BACK, 0);
     delay(400);
 }

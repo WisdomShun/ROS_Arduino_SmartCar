@@ -14,9 +14,9 @@
 #include "SmartCar.h"
 #include <geometry_msgs/Twist.h>
 
-#include <std_msgs/Float32.h>   //发布障碍物距离信息
+//#include <std_msgs/Float32.h>   //发布障碍物距离信息
 #include "SmartCarControl/front.h"      //发布左右红外传感器测得的障碍物存在与否
-#include "SmartCarControl/distance.h"
+//#include "SmartCarControl/distance.h"
 #include "SmartCarControl/switchmode.h"
 
 /*
@@ -26,10 +26,10 @@ ros::NodeHandle nh;
 
 SmartCar mycar;
 char buf[16];
-std_msgs::Float32 distance;
+//std_msgs::Float32 distance;
 SmartCarControl::front front;
 
-ros::Publisher chatter1("smartcar/front_distance",&distance);
+//ros::Publisher chatter1("smartcar/front_distance",&distance);
 ros::Publisher chatter2("smartcar/front_obstacle", &front);
 
 bool isAuto = false;//默认为手动模式，防止一开机就乱跑
@@ -115,14 +115,13 @@ void updateStatus() {
         default:
             break;
     }
-    distance.data = mycar.distance();
+    //distance.data = mycar.distance();
 }
 
-/*ros::ServiceServer<SmartCarControl::distance::Request, SmartCarControl::distance::Response> servicedistance(
+ros::ServiceServer<SmartCarControl::distance::Request, SmartCarControl::distance::Response> servicedistance(
         "getDistance", &distanceService);
 ros::ServiceServer<SmartCarControl::switchmode::Request, SmartCarControl::switchmode::Response> serviceswitch(
         "switchToAuto", &switchAutoService);
-*/
 ros::Subscriber<geometry_msgs::Twist> sub("smartcar/cmd_vel", &callback);
 
 
@@ -130,9 +129,9 @@ void setup() {
     //初始化调正超声波传感器舵机，防止头看歪
     mycar.init();
     nh.initNode();
-    //nh.advertiseService(servicedistance);
-    //nh.advertiseService(serviceswitch);
-    nh.advertise(chatter1);
+    nh.advertiseService(servicedistance);
+    nh.advertiseService(serviceswitch);
+    //nh.advertise(chatter1);
     nh.advertise(chatter2);
     nh.subscribe(sub);
 }
@@ -193,7 +192,7 @@ void selfRun() {
 
 void loop() {
     updateStatus();
-    chatter1.publish(&distance);
+    //chatter1.publish(&distance);
     chatter2.publish(&front);
     nh.spinOnce();
     switch (isAuto) {

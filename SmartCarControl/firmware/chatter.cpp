@@ -16,7 +16,7 @@
 
 //#include <std_msgs/Float32.h>   //发布障碍物距离信息
 #include "SmartCarControl/front.h"      //发布左右红外传感器测得的障碍物存在与否
-//#include "SmartCarControl/distance.h"
+#include "SmartCarControl/distance.h"
 #include "SmartCarControl/switchmode.h"
 
 /*

@@ -15,12 +15,12 @@ find_package(catkin REQUIRED COMPONENTS
 add_message_files(
         FILES
         front.msg
-        distance.msg
+        #distance.msg
 )
 
 add_service_files(
         FILES
-        #distance.srv
+        distance.srv
         switchmode.srv
 )
 
